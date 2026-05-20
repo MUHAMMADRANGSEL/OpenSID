@@ -1,199 +1,176 @@
-<?php
-	$subjek = $_SESSION['subjek_tipe'];
-	switch($subjek){
-		case 1: $sql = $nama="Nama"; $nomor="NIK";$asubjek="Penduduk"; break;
-		case 2: $sql = $nama="Kepala Keluarga"; $nomor="Nomor KK";$asubjek="Keluarga"; break;
-		case 3: $sql = $nama="Kepala Rumahtangga"; $nomor="Nomor Rumahtangga";$asubjek="Rumahtangga"; break;
-		case 4: $sql = $nama="Nama Kelompok"; $nomor="ID Kelompok";$asubjek="Kelompok"; break;
-		default: return null;
-	}
+<?php defined('BASEPATH') OR exit('No direct script access allowed');
+/*
+ * File ini:
+ *
+ * View untuk modul Analisis > Analisis Laporan
+ *
+ * donjo-app/views/analisis_laporan/table.php
+ *
+ */
+/*
+ * File ini bagian dari:
+ *
+ * OpenSID
+ *
+ * Sistem informasi desa sumber terbuka untuk memajukan desa
+ *
+ * Aplikasi dan source code ini dirilis berdasarkan lisensi GPL V3
+ *
+ * Hak Cipta 2009 - 2015 Combine Resource Institution (http://lumbungkomunitas.net/)
+ * Hak Cipta 2016 - 2020 Perkumpulan Desa Digital Terbuka (https://opendesa.id)
+ *
+ * Dengan ini diberikan izin, secara gratis, kepada siapa pun yang mendapatkan salinan
+ * dari perangkat lunak ini dan file dokumentasi terkait ("Aplikasi Ini"), untuk diperlakukan
+ * tanpa batasan, termasuk hak untuk menggunakan, menyalin, mengubah dan/atau mendistribusikan,
+ * asal tunduk pada syarat berikut:
+ *
+ * Pemberitahuan hak cipta di atas dan pemberitahuan izin ini harus disertakan dalam
+ * setiap salinan atau bagian penting Aplikasi Ini. Barang siapa yang menghapus atau menghilangkan
+ * pemberitahuan ini melanggar ketentuan lisensi Aplikasi Ini.
+ *
+ * PERANGKAT LUNAK INI DISEDIAKAN "SEBAGAIMANA ADANYA", TANPA JAMINAN APA PUN, BAIK TERSURAT MAUPUN
+ * TERSIRAT. PENULIS ATAU PEMEGANG HAK CIPTA SAMA SEKALI TIDAK BERTANGGUNG JAWAB ATAS KLAIM, KERUSAKAN ATAU
+ * KEWAJIBAN APAPUN ATAS PENGGUNAAN ATAU LAINNYA TERKAIT APLIKASI INI.
+ *
+ * @package	OpenSID
+ * @author	Tim Pengembang OpenDesa
+ * @copyright	Hak Cipta 2009 - 2015 Combine Resource Institution (http://lumbungkomunitas.net/)
+ * @copyright	Hak Cipta 2016 - 2020 Perkumpulan Desa Digital Terbuka (https://opendesa.id)
+ * @license	http://www.gnu.org/licenses/gpl.html	GPL V3
+ * @link 	https://github.com/OpenSID/OpenSID
+ */
 ?>
+
 <script>
 	$(function() {
-		var keyword = <?php echo $keyword?> ;
-		$( "#cari" ).autocomplete({
-			source: keyword
+		var keyword = <?= $keyword?> ;
+		$("#cari").autocomplete( {
+			source: keyword,
+			maxShowItems: 10,
 		});
 	});
 </script>
-<style>
-	table.head{
-		font-size:16px;
-		font-weight:normal;
-	}
-</style>
-<div id="pageC">
-<div id="contentpane"> 
-	<form id="mainform" name="mainform" action="" method="post">
-<div class="ui-layout-north panel">
-</div>
-<div class="ui-layout-center" id="maincontent">
-		<table class="head">
-			<tr>
-				<td width="150">Nama Analisis</td>
-				<td> : </td>
-				<td><a href="<?php echo site_url()?>analisis_master/menu/<?php echo $_SESSION['analisis_master']?>"><?php echo $analisis_master['nama']?></a></td>
-			</tr>
-			<tr>
-				<td>Subjek Analisis</td>
-				<td> : </td>
-				<td><?php echo $asubjek?></td>
-			</tr>
-			<tr>
-				<td>Periode</td>
-				<td> : </td>
-				<td><?php echo $analisis_periode?></td>
-			</tr>
-		</table>
-<div class="table-panel top">
-	<div class="left">	
-		<select name="klasifikasi" onchange="formAction('mainform','<?php echo site_url('analisis_laporan/klasifikasi')?>')">
-			<option value=""> --- Klasifikasi --- </option>
-			<?php foreach($list_klasifikasi AS $data){?>
-			<option value="<?php echo $data['id']?>" <?php if($klasifikasi == $data['id']) :?>selected<?php endif?>><?php echo $data['nama']?></option>
-			<?php }?>
-		</select>
-		<select name="dusun" onchange="formAction('mainform','<?php echo site_url('analisis_laporan/dusun')?>')">
-			<option value=""> --- Dusun --- </option>
-			<?php foreach($list_dusun AS $data){?>
-				<option value="<?php echo $data['dusun']?>" <?php if($dusun == $data['dusun']) :?>selected<?php endif?>><?php echo $data['dusun']?></option>
-			<?php }?>
-		</select>
-		
-		<?php if($dusun){?>
-			<select name="rw" onchange="formAction('mainform','<?php echo site_url('analisis_laporan/rw')?>')">
-				<option value="">RW</option>
-				<?php foreach($list_rw AS $data){?>
-					<option value="<?php echo $data['rw']?>" <?php if($rw == $data['rw']) :?>selected<?php endif?>><?php echo $data['rw']?></option>
-				<?php }?>
-			</select>
-		<?php }?>
-		
-		<?php if($rw){?>
-		 <select name="rt" onchange="formAction('mainform','<?php echo site_url('analisis_laporan/rt')?>')">
-			<option value="">RT</option>
-			<?php foreach($list_rt AS $data){?>
-				<option value="<?php echo $data['rt']?>" <?php if($rt == $data['rt']) :?>selected<?php endif?>><?php echo $data['rt']?></option>
-			<?php }?>
-		 </select>
-		<?php }?>
-		<a href="<?php echo site_url("analisis_laporan/cetak/$o")?>" class="uibutton special tipsy south" title="Cetak Data" target="_blank"><span class="icon-print icon-large">&nbsp;</span>Cetak</a>
-		<a href="<?php echo site_url("analisis_laporan/excel/$o")?>" class="uibutton special tipsy south" title="Data Excel" target="_blank"><span class="icon-file-text icon-large">&nbsp;</span>Excel</a>
-		<a href="<?php echo site_url("analisis_laporan/ajax_multi_jawab")?>" target="ajax-modal-map" rel="window" header="Filter Indikator" class="uibutton tipsy south" title="Filter Indikator"><span class="icon-search icon-large">&nbsp;</span>Filter Indikator</a>
-	</div>
-	<div class="right">
-		<input name="cari" id="cari" type="text" class="inputbox help tipped" size="40" value="<?php echo $cari?>" title="Cari.." onkeypress="if (event.keyCode == 13) {$('#'+'mainform').attr('action','<?php echo site_url('analisis_laporan/search')?>');$('#'+'mainform').submit();}" />
-		<button type="button" onclick="$('#'+'mainform').attr('action','<?php echo site_url('analisis_laporan/search')?>');$('#'+'mainform').submit();" class="uibutton tipsy south" title="Cari Data"><span class="icon-search icon-large">&nbsp;</span>Cari</button>
-	</div>
-</div>
-<table class="list">
-		<thead>
-			<tr>
-				<th width="10">No</th>
-				<th width='50'>Rincian</th>
-			<?php if($o==2): ?>
-				<th align="left" width='120'><a href="<?php echo site_url("analisis_respon/index/$p/1")?>"><?php echo $nomor?><span class="ui-icon ui-icon-triangle-1-n">&nbsp;</span></a></th>
-			<?php elseif($o==1): ?>
-				<th align="left" width='120'><a href="<?php echo site_url("analisis_respon/index/$p/2")?>"><?php echo $nomor?><span class="ui-icon ui-icon-triangle-1-s">&nbsp;</span></a></th>
-			<?php else: ?>
-				<th align="left" width='120'><a href="<?php echo site_url("analisis_respon/index/$p/1")?>"><?php echo $nomor?><span class="ui-icon ui-icon-triangle-2-n-s">&nbsp;</span></a></th>
-			<?php endif; ?>
-			
-			<?php if($o==4): ?>
-				<th align="left" width='250'><a href="<?php echo site_url("analisis_respon/index/$p/3")?>"><?php echo $nama?><span class="ui-icon ui-icon-triangle-1-n">&nbsp;</span></a></th>
-			<?php elseif($o==3): ?>
-				<th align="left" width='250'><a href="<?php echo site_url("analisis_respon/index/$p/4")?>"><?php echo $nama?><span class="ui-icon ui-icon-triangle-1-s">&nbsp;</span></a></th>
-			<?php else: ?>
-				<th align="left" width='250'><a href="<?php echo site_url("analisis_respon/index/$p/3")?>"><?php echo $nama?><span class="ui-icon ui-icon-triangle-2-n-s">&nbsp;</span></a></th>
-			<?php endif; ?>
-			
-				<th width='50'>L/P</th>
-				<th width='100'>Dusun</th>
-				<th width='30'>RW</th>
-				<th width='30'>RT</th>
-			
-			<?php if($o==6): ?>
-				<th align="left" width='50'><a href="<?php echo site_url("analisis_laporan/index/$p/5")?>">Nilai<span class="ui-icon ui-icon-triangle-1-n">&nbsp;</span></a></th>
-			<?php elseif($o==5): ?>
-				<th align="left" width='50'><a href="<?php echo site_url("analisis_laporan/index/$p/6")?>">Nilai<span class="ui-icon ui-icon-triangle-1-s">&nbsp;</span></a></th>
-			<?php else: ?>
-				<th align="left" width='50'><a href="<?php echo site_url("analisis_laporan/index/$p/5")?>">Nilai<span class="ui-icon ui-icon-triangle-2-n-s">&nbsp;</span></a></th>
-			<?php endif; ?>
-			
-			<?php if($o==6): ?>
-				<th align="left" width='100'><a href="<?php echo site_url("analisis_laporan/index/$p/5")?>">Klasifikasi<span class="ui-icon ui-icon-triangle-1-n">&nbsp;</span></a></th>
-			<?php elseif($o==5): ?>
-				<th align="left" width='100'><a href="<?php echo site_url("analisis_laporan/index/$p/6")?>">Klasifikasi<span class="ui-icon ui-icon-triangle-1-s">&nbsp;</span></a></th>
-			<?php else: ?>
-				<th align="left" width='100'><a href="<?php echo site_url("analisis_laporan/index/$p/5")?>">Klasifikasi<span class="ui-icon ui-icon-triangle-2-n-s">&nbsp;</span></a></th>
-			<?php endif; ?>
-			<th></th>
-			</tr>
-		</thead>
-		<tbody>
-		<?php foreach($main as $data): ?>
-			<tr>
-				<td align="center" width="2"><?php echo $data['no']?></td>
-				<td>
-					<div class="uibutton-group">
-						<a href="<?php echo site_url("analisis_laporan/kuisioner/$p/$o/$data[id]")?>" class="uibutton south"><span class="icon-list icon-large"> Rincian </span></a>
+<div class="content-wrapper">
+	<section class="content-header">
+		<h1>Laporan Hasil Analisis</h1>
+		<ol class="breadcrumb">
+			<li><a href="<?= site_url('hom_sid'); ?>"><i class="fa fa-home"></i> Home</a></li>
+			<li><a href="<?= site_url('analisis_master'); ?>"> Master Analisis</a></li>
+			<li><a href="<?= site_url('analisis_laporan/leave'); ?>"><?= $analisis_master['nama']; ?></a></li>
+			<li class="active">Laporan Hasil Klasifikasi</li>
+		</ol>
+	</section>
+	</section>
+	<section class="content" id="maincontent">
+		<form id="mainform" name="mainform" method="post">
+			<div class="row">
+				<div class="col-md-4 col-lg-3">
+					<?php $this->load->view('analisis_master/left', $data); ?>
+				</div>
+				<div class="col-md-8 col-lg-9">
+					<div class="box box-info">
+						<div class="box-header with-border">
+							<a href="<?= site_url("analisis_laporan/dialog/$o/cetak")?>" class="btn btn-social btn-flat bg-purple btn-sm visible-xs-block visible-sm-inline-block visible-md-inline-block visible-lg-inline-block" data-remote="false" data-toggle="modal" data-target="#modalBox" data-title="Cetak Laporan Hasil Analisis <?= $judul['asubjek']; ?>" title="Cetak"><i class="fa fa-print"></i>Cetak</a>
+							<a href="<?= site_url("analisis_laporan/dialog/$o/unduh")?>" class="btn btn-social btn-flat bg-navy btn-sm btn-sm visible-xs-block visible-sm-inline-block visible-md-inline-block visible-lg-inline-block" data-remote="false" data-toggle="modal" data-target="#modalBox" data-title="Cetak Laporan Hasil Analisis <?= $judul['asubjek']; ?>" title="Unduh"><i class="fa fa-download"></i>Unduh</a>
+							<a href="<?= site_url("analisis_laporan/ajax_multi_jawab"); ?>" class="btn btn-social btn-flat bg-olive btn-sm btn-sm visible-xs-block visible-sm-inline-block visible-md-inline-block visible-lg-inline-block" title="Filter Indikator" data-remote="false" data-toggle="modal" data-target="#modalBox" data-title="Filter Indikator"><i class="fa fa-search"></i>Filter Indikator</a>
+							<a href="<?= site_url("{$this->controller}/clear"); ?>" class="btn btn-social btn-flat bg-purple btn-sm visible-xs-block visible-sm-inline-block visible-md-inline-block visible-lg-inline-block"><i class="fa fa-refresh"></i>Bersihkan</a>
+							<a href="<?= site_url(); ?>analisis_laporan/leave" class="btn btn-social btn-flat btn-info btn-sm btn-sm visible-xs-block visible-sm-inline-block visible-md-inline-block visible-lg-inline-block" title="Kembali Ke Daftar RW"><i class="fa fa-arrow-circle-left "></i>Kembali Ke <?= $analisis_master['nama']; ?></a>
+						</div>
+						<div class="box-header with-border">
+							<div class="table-responsive">
+								<table class="table table-bordered table-striped table-hover tabel-rincian">
+									<tr>
+										<td width="20%">Nama Analisis</td>
+										<td width="1%">:</td>
+										<td><a href="<?= site_url("analisis_master/menu/$analisis_master[id]"); ?>"><?= $analisis_master['nama']; ?> </a></td>
+									</tr>
+									<tr>
+										<td>Subjek Analisis</td>
+										<td>:</td>
+										<td><?= $judul['asubjek']; ?></td>
+									</tr>
+									<tr>
+										<td>Priode</td>
+										<td>:</td>
+										<td><?= $analisis_periode; ?></td>
+									</tr>
+								</table>
+							</div>
+						</div>
+						<div class="box-body">
+							<div class="dataTables_wrapper form-inline dt-bootstrap no-footer">
+								<form id="mainform" name="mainform" method="post">
+									<div class="row">
+										<div class="col-sm-8">
+											<select class="form-control input-sm" name="klasifikasi" onchange="formAction('mainform', '<?= site_url('analisis_laporan/filter/klasifikasi'); ?>')">
+												<option value=""> --- Klasifikasi --- </option>
+												<?php foreach ($list_klasifikasi AS $data): ?>
+													<option value="<?= $data['id']; ?>" <?= selected($klasifikasi, $data['id']); ?>><?= $data['nama']; ?></option>
+												<?php endforeach;?>
+											</select>
+											<?php $this->load->view('global/filter_wilayah', ['form' => 'mainform']); ?>
+										</div>
+										<div class="col-sm-4">
+											<div class="input-group input-group-sm pull-right">
+												<input name="cari" id="cari" class="form-control" placeholder="Cari..." type="text" value="<?=html_escape($cari)?>" onkeypress="if (event.keyCode == 13):$('#'+'mainform').attr('action', '<?= site_url("analisis_laporan/filter/cari"); ?>');$('#'+'mainform').submit();endif">
+												<div class="input-group-btn">
+													<button type="submit" class="btn btn-default" onclick="$('#'+'mainform').attr('action', '<?= site_url("analisis_laporan/filter/cari"); ?>');$('#'+'mainform').submit();"><i class="fa fa-search"></i></button>
+												</div>
+											</div>
+										</div>
+									</div>
+									<div class="table-responsive">
+										<table class="table table-bordered table-striped dataTable table-hover tabel-daftar">
+											<thead class="bg-gray disabled color-palette">
+												<tr>
+													<th>No</th>
+													<th>Aksi</th>
+													<th><?= url_order($o, "{$this->controller}/{$func}/$p", 1, $judul['nomor']); ?></th>
+													<?php if($analisis_master['subjek_tipe'] != 4): ?>
+														<th><?= url_order($o, "{$this->controller}/{$func}/$p", 7, $judul['nomor_kk']); ?></th>
+													<?php endif;?>
+													<th><?= url_order($o, "{$this->controller}/{$func}/$p", 3, $judul['nama']); ?></th>
+													<th>Jenis Kelamin</th>
+													<th>Alamat</th>
+													<th><?= url_order($o, "{$this->controller}/{$func}/$p", 5, "Nilai"); ?></th>
+													<th>Klasifikasi</th>
+												</tr>
+											</thead>
+											<tbody>
+												<?php if ($main): ?>
+													<?php foreach ($main as $key => $data): ?>
+														<tr>
+															<td class="padat"><?= ($key + $paging->offset + 1); ?></td>
+															<td class="aksi">
+																<a href="<?= site_url("analisis_laporan/kuisioner/$p/$o/$data[id]"); ?>" class="btn bg-purple btn-flat btn-sm" title="Rincian"><i class='fa fa-list'></i></a>
+															</td>
+															<td><?= $data['uid']; ?></td>
+															<?php if($analisis_master['subjek_tipe'] != 4): ?>
+																<td><?= $data['kk']; ?></td>
+															<?php endif; ?>
+															<td nowrap><?= $data['nama']; ?></td>
+															<td><?= $data['jk']; ?></td>
+															<td><?= strtoupper($data['alamat'] . " " . "RT/RW ". $data['rt']."/".$data['rw'] . " - " . $this->setting->sebutan_dusun . " " . $data['dusun']); ?></td>
+															<td><?= $data['nilai']; ?></td>
+															<td><?= $data['klasifikasi']; ?></td>
+														</tr>
+													<?php endforeach; ?>
+												<?php else: ?>
+													<tr>
+														<td class="text-center" colspan="9">Data Tidak Tersedia</td>
+													</tr>
+												<?php endif; ?>
+											</tbody>
+										</table>
+									</div>
+								</form>
+								<?php $this->load->view('global/paging'); ?>
+							</div>
+						</div>
 					</div>
-				</td>
-				<td><?php echo $data['uid']?></td>
-				<td><?php echo $data['nama']?></td>
-				<td align="center"><?php echo $data['jk']?></td>
-				<td><?php echo $data['dusun']?></td>
-				<td><?php echo $data['rw']?></td>
-				<td><?php echo $data['rt']?></td>
-				<td align="right"><?php echo $data['nilai']?></td>
-				<td align="right"><?php echo $data['klasifikasi']?></td>
-				<td></td>
-			</tr>
-		<?php endforeach; ?>
-		</tbody>
-</table>
+				</div>
+			</div>
+		</form>
+	</section>
 </div>
-</form>
-<div class="ui-layout-south panel bottom">
-	<div class="left"> 
-		<div class="table-info">
-			<form id="paging" action="<?php echo site_url('analisis_laporan')?>" method="post">
-				<a href="<?php echo site_url()?>analisis_laporan/leave" class="uibutton icon prev">Kembali</a>
-				<label></label>
-				<select name="per_page" onchange="$('#paging').submit()" >
-					<option value="20" <?php selected($per_page,20); ?> >20</option>
-					<option value="50" <?php selected($per_page,50); ?> >50</option>
-					<option value="100" <?php selected($per_page,100); ?> >100</option>
-				</select>
-				<label>Dari</label>
-				<label><?php echo $paging->num_rows?></label>
-				<label>Total Data</label>
-			</form>
-		</div>
-	</div>
-<div class="right">
-	<div class="uibutton-group">
-	<?php if($paging->start_link): ?>
-		<a href="<?php echo site_url("analisis_laporan/index/$paging->start_link/$o")?>" class="uibutton" >Awal</a>
-		<?php endif; ?>
-		<?php if($paging->prev): ?>
-		<a href="<?php echo site_url("analisis_laporan/index/$paging->prev/$o")?>" class="uibutton" >Prev</a>
-		<?php endif; ?>
-	</div>
-	<div class="uibutton-group">
-		<?php for($i=$paging->start_link;$i<=$paging->end_link;$i++): ?>
-		<a href="<?php echo site_url("analisis_laporan/index/$i/$o")?>" <?php jecho($p,$i,"class='uibutton special'")?> class="uibutton"><?php echo $i?></a>
-		<?php endfor; ?>
-	</div>
-	<div class="uibutton-group">
-		<?php if($paging->next): ?>
-		<a href="<?php echo site_url("analisis_laporan/index/$paging->next/$o")?>" class="uibutton">Next</a>
-		<?php endif; ?>
-		<?php if($paging->end_link): ?>
-	<a href="<?php echo site_url("analisis_laporan/index/$paging->end_link/$o")?>" class="uibutton">Akhir</a>
-		<?php endif; ?>
-	</div>
-</div>
-</div>
-</div>
-</div>
+<?php $this->load->view('global/confirm_delete'); ?>
